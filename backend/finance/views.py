@@ -5,6 +5,10 @@ from .serializers import CategorySerializer, AccountSerializer, TransactionSeria
 from django.contrib.auth.models import User
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from django.db.models import Sum
+from django.db.models.functions import TruncMonth
+from rest_framework.views import APIView
+
 
 
 # Create your views here.
@@ -68,3 +72,28 @@ def register(request):
 
     user = User.objects.create_user(username=username, password=password)
     return Response({'message': 'User created'}, status=status.HTTP_201_CREATED)        
+class MonthlySummaryView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        data = (
+            Transaction.objects.filter(user=request.user)
+            .annotate(month=TruncMonth('date'))
+            .values('month', 'type')
+            .annotate(total=Sum('amount'))
+            .order_by('month')
+        )
+        return Response(data)
+
+
+class CategorySummaryView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        data = (
+            Transaction.objects.filter(user=request.user, type='expense')
+            .values('category__name')
+            .annotate(total=Sum('amount'))
+            .order_by('-total')
+        )
+        return Response(data)
