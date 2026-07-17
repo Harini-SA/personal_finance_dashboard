@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
+import Summary from '../components/Summary';
 
 function Dashboard() {
   const [transactions, setTransactions] = useState([]);
@@ -96,6 +97,7 @@ function Dashboard() {
       </div>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
+      <Summary />
 
       <h3>Add Transaction</h3>
       <form onSubmit={handleAddTransaction} style={{ marginBottom: '2rem' }}>
