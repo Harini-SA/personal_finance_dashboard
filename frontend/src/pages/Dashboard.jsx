@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import Summary from '../components/Summary';
+import CategoryAccountManager from '../components/CategoryAccountManager';
 
 function Dashboard() {
   const [transactions, setTransactions] = useState([]);
@@ -98,6 +99,11 @@ function Dashboard() {
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <Summary />
+      <CategoryAccountManager
+        categories={categories}
+        accounts={accounts}
+        onUpdate={fetchCategoriesAndAccounts}
+      />
 
       <h3>Add Transaction</h3>
       <form onSubmit={handleAddTransaction} style={{ marginBottom: '2rem' }}>
