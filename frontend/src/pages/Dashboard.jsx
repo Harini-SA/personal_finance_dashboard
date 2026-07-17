@@ -6,6 +6,8 @@ import CategoryAccountManager from '../components/CategoryAccountManager';
 
 function Dashboard() {
   const [transactions, setTransactions] = useState([]);
+  const [count, setCount] = useState(0);                  // ← ADD this
+  const [page, setPage] = useState(1);
   const [categories, setCategories] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,12 +33,13 @@ function Dashboard() {
     setLoading(true);
     setError('');
     try {
-      const params = {};
+      const params = { page };
       if (filterType) params.type = filterType;
       if (filterCategory) params.category = filterCategory;
 
       const res = await api.get('/transactions/', { params });
-      setTransactions(res.data);
+      setTransactions(res.data.results);
+      setCount(res.data.count);
     } catch (err) {
       setError('Failed to load transactions');
     } finally {
@@ -44,18 +47,18 @@ function Dashboard() {
     }
   };
 
-  const fetchCategoriesAndAccounts = async () => {
-    try {
-      const [catRes, accRes] = await Promise.all([
-        api.get('/categories/'),
-        api.get('/accounts/'),
-      ]);
-      setCategories(catRes.data);
-      setAccounts(accRes.data);
-    } catch (err) {
-      setError('Failed to load categories/accounts');
-    }
-  };
+ const fetchCategoriesAndAccounts = async () => {
+  try {
+    const [catRes, accRes] = await Promise.all([
+      api.get('/categories/'),
+      api.get('/accounts/'),
+    ]);
+    setCategories(catRes.data.results);
+    setAccounts(accRes.data.results);
+  } catch (err) {
+    setError('Failed to load categories/accounts');
+  }
+ };
 
   useEffect(() => {
     fetchCategoriesAndAccounts();
@@ -63,6 +66,9 @@ function Dashboard() {
 
   useEffect(() => {
     fetchTransactions();
+  }, [filterType, filterCategory]);
+  useEffect(() => {
+    setPage(1);
   }, [filterType, filterCategory]);
 
   const handleFormChange = (e) => {
@@ -167,34 +173,47 @@ function Dashboard() {
       ) : transactions.length === 0 ? (
         <p>No transactions yet.</p>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Type</th>
-              <th>Category</th>
-              <th>Account</th>
-              <th>Amount</th>
-              <th>Note</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map((t) => (
-              <tr key={t.id}>
-                <td>{t.date}</td>
-                <td>{t.type}</td>
-                <td>{t.category_name}</td>
-                <td>{t.account_name}</td>
-                <td>{t.amount}</td>
-                <td>{t.note}</td>
-                <td>
-                  <button onClick={() => handleDelete(t.id)}>Delete</button>
-                </td>
+        <>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Account</th>
+                <th>Amount</th>
+                <th>Note</th>
+                <th></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {transactions.map((t) => (
+                <tr key={t.id}>
+                  <td>{t.date}</td>
+                  <td>{t.type}</td>
+                  <td>{t.category_name}</td>
+                  <td>{t.account_name}</td>
+                  <td>{t.amount}</td>
+                  <td>{t.note}</td>
+                  <td>
+                    <button onClick={() => handleDelete(t.id)}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div style={{ marginTop: '1rem' }}>
+            <button disabled={page === 1} onClick={() => setPage(page - 1)}>
+              Previous
+            </button>
+            <span style={{ margin: '0 1rem' }}>
+              Page {page} of {Math.ceil(count / 10)}
+            </span>
+            <button disabled={page * 10 >= count} onClick={() => setPage(page + 1)}>
+              Next
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
