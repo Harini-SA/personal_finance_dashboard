@@ -5,8 +5,10 @@ import Summary from '../components/Summary';
 import CategoryAccountManager from '../components/CategoryAccountManager';
 
 function Dashboard() {
+  const [activeTab, setActiveTab] = useState('overview');
+  
   const [transactions, setTransactions] = useState([]);
-  const [count, setCount] = useState(0);                  // ← ADD this
+  const [count, setCount] = useState(0);
   const [page, setPage] = useState(1);
   const [categories, setCategories] = useState([]);
   const [accounts, setAccounts] = useState([]);
@@ -47,18 +49,18 @@ function Dashboard() {
     }
   };
 
- const fetchCategoriesAndAccounts = async () => {
-  try {
-    const [catRes, accRes] = await Promise.all([
-      api.get('/categories/'),
-      api.get('/accounts/'),
-    ]);
-    setCategories(catRes.data.results);
-    setAccounts(accRes.data.results);
-  } catch (err) {
-    setError('Failed to load categories/accounts');
-  }
- };
+  const fetchCategoriesAndAccounts = async () => {
+    try {
+      const [catRes, accRes] = await Promise.all([
+        api.get('/categories/'),
+        api.get('/accounts/'),
+      ]);
+      setCategories(catRes.data.results);
+      setAccounts(accRes.data.results);
+    } catch (err) {
+      setError('Failed to load categories/accounts');
+    }
+  };
 
   useEffect(() => {
     fetchCategoriesAndAccounts();
@@ -66,7 +68,8 @@ function Dashboard() {
 
   useEffect(() => {
     fetchTransactions();
-  }, [filterType, filterCategory]);
+  }, [filterType, filterCategory, page]);
+
   useEffect(() => {
     setPage(1);
   }, [filterType, filterCategory]);
@@ -96,125 +99,202 @@ function Dashboard() {
     }
   };
 
+  // Icons removed as per user request
+
   return (
-    <div style={{ maxWidth: 700, margin: '2rem auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <h1>Dashboard</h1>
-        <button onClick={logout}>Logout</button>
-      </div>
+    <div className="dashboard-layout">
+      {/* Sidebar Navigation */}
+      <aside className="sidebar">
+        <div className="sidebar-logo">
+          FinDash
+        </div>
+        
+        <nav className="sidebar-nav">
+          <button 
+            className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`}
+            onClick={() => setActiveTab('overview')}
+          >
+            Overview
+          </button>
+          
+          <button 
+            className={`nav-item ${activeTab === 'transactions' ? 'active' : ''}`}
+            onClick={() => setActiveTab('transactions')}
+          >
+            Transactions
+          </button>
+          
+          <button 
+            className={`nav-item ${activeTab === 'manage' ? 'active' : ''}`}
+            onClick={() => setActiveTab('manage')}
+          >
+            Manage Data
+          </button>
+        </nav>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <Summary />
-      <CategoryAccountManager
-        categories={categories}
-        accounts={accounts}
-        onUpdate={fetchCategoriesAndAccounts}
-      />
+        <div className="sidebar-footer">
+          <button className="nav-item" onClick={logout}>
+            Logout
+          </button>
+        </div>
+      </aside>
 
-      <h3>Add Transaction</h3>
-      <form onSubmit={handleAddTransaction} style={{ marginBottom: '2rem' }}>
-        <input
-          type="number"
-          name="amount"
-          placeholder="Amount"
-          value={form.amount}
-          onChange={handleFormChange}
-          required
-        />
-        <select name="type" value={form.type} onChange={handleFormChange}>
-          <option value="expense">Expense</option>
-          <option value="income">Income</option>
-        </select>
-        <select name="category" value={form.category} onChange={handleFormChange} required>
-          <option value="">Select Category</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>{c.name}</option>
-          ))}
-        </select>
-        <select name="account" value={form.account} onChange={handleFormChange} required>
-          <option value="">Select Account</option>
-          {accounts.map((a) => (
-            <option key={a.id} value={a.id}>{a.name}</option>
-          ))}
-        </select>
-        <input
-          type="date"
-          name="date"
-          value={form.date}
-          onChange={handleFormChange}
-          required
-        />
-        <input
-          type="text"
-          name="note"
-          placeholder="Note (optional)"
-          value={form.note}
-          onChange={handleFormChange}
-        />
-        <button type="submit">Add</button>
-      </form>
+      {/* Main Content Area */}
+      <main className="main-content">
+        {error && <div className="card" style={{borderColor: 'var(--danger-color)', color: 'var(--danger-color)'}}>{error}</div>}
 
-      <h3>Filters</h3>
-      <select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
-        <option value="">All Types</option>
-        <option value="expense">Expense</option>
-        <option value="income">Income</option>
-      </select>
-      <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
-        <option value="">All Categories</option>
-        {categories.map((c) => (
-          <option key={c.id} value={c.id}>{c.name}</option>
-        ))}
-      </select>
-
-      <h3>Transactions</h3>
-      {loading ? (
-        <p>Loading...</p>
-      ) : transactions.length === 0 ? (
-        <p>No transactions yet.</p>
-      ) : (
-        <>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Category</th>
-                <th>Account</th>
-                <th>Amount</th>
-                <th>Note</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map((t) => (
-                <tr key={t.id}>
-                  <td>{t.date}</td>
-                  <td>{t.type}</td>
-                  <td>{t.category_name}</td>
-                  <td>{t.account_name}</td>
-                  <td>{t.amount}</td>
-                  <td>{t.note}</td>
-                  <td>
-                    <button onClick={() => handleDelete(t.id)}>Delete</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div style={{ marginTop: '1rem' }}>
-            <button disabled={page === 1} onClick={() => setPage(page - 1)}>
-              Previous
-            </button>
-            <span style={{ margin: '0 1rem' }}>
-              Page {page} of {Math.ceil(count / 10)}
-            </span>
-            <button disabled={page * 10 >= count} onClick={() => setPage(page + 1)}>
-              Next
-            </button>
+        {/* Overview Tab */}
+        {activeTab === 'overview' && (
+          <div className="tab-pane">
+            <h2>Dashboard Overview</h2>
+            <p>Welcome back! Here's a summary of your finances.</p>
+            <Summary />
           </div>
-        </>
-      )}
+        )}
+
+        {/* Transactions Tab */}
+        {activeTab === 'transactions' && (
+          <div className="tab-pane">
+            <h2>Transactions</h2>
+            <p>Manage and track your income and expenses.</p>
+
+            <div className="card">
+              <div className="card-header">
+                <h3>Add New Transaction</h3>
+              </div>
+              <form onSubmit={handleAddTransaction}>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>Amount</label>
+                    <input type="number" name="amount" placeholder="0.00" value={form.amount} onChange={handleFormChange} required />
+                  </div>
+                  <div className="form-group">
+                    <label>Type</label>
+                    <select name="type" value={form.type} onChange={handleFormChange}>
+                      <option value="expense">Expense</option>
+                      <option value="income">Income</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Category</label>
+                    <select name="category" value={form.category} onChange={handleFormChange} required>
+                      <option value="">Select Category</option>
+                      {categories.map((c) => (
+                        <option key={c.id} value={c.id}>{c.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Account</label>
+                    <select name="account" value={form.account} onChange={handleFormChange} required>
+                      <option value="">Select Account</option>
+                      {accounts.map((a) => (
+                        <option key={a.id} value={a.id}>{a.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Date</label>
+                    <input type="date" name="date" value={form.date} onChange={handleFormChange} required />
+                  </div>
+                  <div className="form-group">
+                    <label>Note</label>
+                    <input type="text" name="note" placeholder="Optional note" value={form.note} onChange={handleFormChange} />
+                  </div>
+                </div>
+                <button type="submit" className="primary">Add Transaction</button>
+              </form>
+            </div>
+
+            <div className="card">
+              <div className="card-header" style={{flexWrap: 'wrap', gap: '1rem'}}>
+                <h3>Recent Transactions</h3>
+                <div style={{display: 'flex', gap: '1rem'}}>
+                  <select value={filterType} onChange={(e) => setFilterType(e.target.value)} style={{width: '150px'}}>
+                    <option value="">All Types</option>
+                    <option value="expense">Expense</option>
+                    <option value="income">Income</option>
+                  </select>
+                  <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} style={{width: '180px'}}>
+                    <option value="">All Categories</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              
+              {loading ? (
+                <p>Loading transactions...</p>
+              ) : transactions.length === 0 ? (
+                <p>No transactions found.</p>
+              ) : (
+                <>
+                  <div className="table-container">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Date</th>
+                          <th>Type</th>
+                          <th>Category</th>
+                          <th>Account</th>
+                          <th>Amount</th>
+                          <th>Note</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {transactions.map((t) => (
+                          <tr key={t.id}>
+                            <td>{t.date}</td>
+                            <td>
+                              <span className={`badge ${t.type}`}>{t.type}</span>
+                            </td>
+                            <td>{t.category_name}</td>
+                            <td>{t.account_name}</td>
+                            <td style={{fontWeight: '600'}}>${parseFloat(t.amount).toFixed(2)}</td>
+                            <td style={{color: 'var(--text-secondary)'}}>{t.note || '-'}</td>
+                            <td>
+                              <button className="danger" onClick={() => handleDelete(t.id)} style={{padding: '0.25rem 0.5rem', fontSize: '0.75rem'}}>
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                  <div className="pagination">
+                    <button className="ghost" disabled={page === 1} onClick={() => setPage(page - 1)}>
+                      Previous
+                    </button>
+                    <span>
+                      Page {page} of {Math.max(1, Math.ceil(count / 10))}
+                    </span>
+                    <button className="ghost" disabled={page * 10 >= count} onClick={() => setPage(page + 1)}>
+                      Next
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Manage Data Tab */}
+        {activeTab === 'manage' && (
+          <div className="tab-pane">
+            <h2>Manage Data</h2>
+            <p>Configure your categories and accounts.</p>
+            <CategoryAccountManager
+              categories={categories}
+              accounts={accounts}
+              onUpdate={fetchCategoriesAndAccounts}
+            />
+          </div>
+        )}
+      </main>
     </div>
   );
 }

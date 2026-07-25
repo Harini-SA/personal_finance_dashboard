@@ -5,7 +5,7 @@ import {
   PieChart, Pie, Cell,
 } from 'recharts';
 
-const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088FE', '#00C49F'];
+const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
 
 function Summary() {
   const [monthlyData, setMonthlyData] = useState([]);
@@ -46,49 +46,59 @@ function Summary() {
   };
 
   return (
-    <div style={{ marginBottom: '2rem' }}>
-      <h3>Monthly Income vs Expense</h3>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {monthlyData.length === 0 ? (
-        <p>No data yet.</p>
-      ) : (
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={monthlyData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="income" fill="#82ca9d" />
-            <Bar dataKey="expense" fill="#ff8042" />
-          </BarChart>
-        </ResponsiveContainer>
-      )}
+    <div className="form-grid" style={{ marginBottom: '2rem' }}>
+      {error && <div style={{ color: 'red', width: '100%' }}>{error}</div>}
+      
+      <div className="card">
+        <div className="card-header">
+          <h3>Monthly Income vs Expense</h3>
+        </div>
+        {monthlyData.length === 0 ? (
+          <p>No data yet.</p>
+        ) : (
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={monthlyData}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color)" />
+              <XAxis dataKey="month" tick={{fill: 'var(--text-secondary)'}} />
+              <YAxis tick={{fill: 'var(--text-secondary)'}} />
+              <Tooltip contentStyle={{backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)', color: 'var(--text-primary)'}} />
+              <Legend />
+              <Bar dataKey="income" fill="#10b981" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="expense" fill="#ef4444" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
+      </div>
 
-      <h3>Spending by Category</h3>
-      {categoryData.length === 0 ? (
-        <p>No expense data yet.</p>
-      ) : (
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie
-              data={categoryData}
-              dataKey="total"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              label
-            >
-              {categoryData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
-      )}
+      <div className="card">
+        <div className="card-header">
+          <h3>Spending by Category</h3>
+        </div>
+        {categoryData.length === 0 ? (
+          <p>No expense data yet.</p>
+        ) : (
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={categoryData}
+                dataKey="total"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={100}
+                innerRadius={60}
+                label
+              >
+                {categoryData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip contentStyle={{backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)', color: 'var(--text-primary)'}} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
+      </div>
     </div>
   );
 }

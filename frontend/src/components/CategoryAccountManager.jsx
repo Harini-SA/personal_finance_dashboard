@@ -33,40 +33,57 @@ function CategoryAccountManager({ categories, accounts, onUpdate }) {
   };
 
   return (
-    <div style={{ display: 'flex', gap: '2rem', marginBottom: '2rem' }}>
-      <div>
-        <h4>Categories</h4>
-        <ul>
-          {categories.map((c) => <li key={c.id}>{c.name}</li>)}
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+      
+      {/* Categories Card */}
+      <div className="card">
+        <div className="card-header">
+          <h3>Categories</h3>
+        </div>
+        <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 1.5rem 0', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          {categories.map((c) => (
+            <li key={c.id} style={{ padding: '0.75rem', backgroundColor: 'var(--bg-color)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontWeight: 500 }}>{c.name}</span>
+            </li>
+          ))}
+          {categories.length === 0 && <p>No categories found.</p>}
         </ul>
-        <form onSubmit={addCategory}>
+        <form onSubmit={addCategory} style={{ display: 'flex', gap: '0.5rem' }}>
           <input
             type="text"
-            placeholder="New category"
+            placeholder="New category name"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
           />
-          <button type="submit">Add</button>
+          <button type="submit" className="primary">Add</button>
         </form>
       </div>
 
-      <div>
-        <h4>Accounts</h4>
-        <ul>
-          {accounts.map((a) => <li key={a.id}>{a.name}</li>)}
+      {/* Accounts Card */}
+      <div className="card">
+        <div className="card-header">
+          <h3>Accounts</h3>
+        </div>
+        <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 1.5rem 0', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          {accounts.map((a) => (
+            <li key={a.id} style={{ padding: '0.75rem', backgroundColor: 'var(--bg-color)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+               <span style={{ fontWeight: 500 }}>{a.name}</span>
+            </li>
+          ))}
+          {accounts.length === 0 && <p>No accounts found.</p>}
         </ul>
-        <form onSubmit={addAccount}>
+        <form onSubmit={addAccount} style={{ display: 'flex', gap: '0.5rem' }}>
           <input
             type="text"
-            placeholder="New account"
+            placeholder="New account name"
             value={newAccount}
             onChange={(e) => setNewAccount(e.target.value)}
           />
-          <button type="submit">Add</button>
+          <button type="submit" className="primary">Add</button>
         </form>
       </div>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <div style={{ color: 'var(--danger-color)', gridColumn: '1 / -1' }}>{error}</div>}
     </div>
   );
 }

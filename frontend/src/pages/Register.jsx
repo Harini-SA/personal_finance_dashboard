@@ -16,33 +16,40 @@ function Register() {
     try {
       await register(username, password);
       setSuccess(true);
-      setTimeout(() => navigate('/login'), 1000);
+      setTimeout(() => navigate('/login'), 1500);
     } catch (err) {
       setError(err.response?.data?.error || 'Registration failed');
     }
   };
 
   return (
-    <div>
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Register</button>
-      </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>Account created! Redirecting to login...</p>}
-      <p>Already have an account? <Link to="/login">Login</Link></p>
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2>Create an Account</h2>
+        {error && <div style={{ color: 'var(--danger-color)', marginBottom: '1rem', textAlign: 'center' }}>{error}</div>}
+        {success && <div style={{ color: 'var(--success-color)', marginBottom: '1rem', textAlign: 'center' }}>Account created! Redirecting...</div>}
+        
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit" className="primary">Register</button>
+        </form>
+        <div className="auth-links">
+          <p>Already have an account? <Link to="/login">Sign in</Link></p>
+        </div>
+      </div>
     </div>
   );
 }
