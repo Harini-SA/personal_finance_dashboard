@@ -67,6 +67,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'config.urls'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
+    "https://personal-finance-dashboard-1-n83r.onrender.com"
 ]
 
 TEMPLATES = [
