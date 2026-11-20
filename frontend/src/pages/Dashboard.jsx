@@ -4,6 +4,7 @@ import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import Summary from '../components/Summary';
 import CategoryAccountManager from '../components/CategoryAccountManager';
+import Budgets from './Budgets';
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -150,6 +151,11 @@ function Dashboard() {
             </div>
           </div>
         )}
+        {activeTab === 'budgets' && (
+  <div className="tab-pane">
+    <Budgets />
+  </div>
+)}
         {/* Transactions Tab */}
         {activeTab === 'transactions' && (
           <div className="tab-pane">
