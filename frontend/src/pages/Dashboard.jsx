@@ -1,3 +1,4 @@
+import Sidebar from '../components/layout/Sidebar';
 import { useState, useEffect } from 'react';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
@@ -103,45 +104,16 @@ function Dashboard() {
 
   return (
     <div className="dashboard-layout">
-      {/* Sidebar Navigation */}
-      <aside className="sidebar">
-        <div className="sidebar-logo">
-          FinDash
-        </div>
-        
-        <nav className="sidebar-nav">
-          <button 
-            className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => setActiveTab('overview')}
-          >
-            Overview
-          </button>
-          
-          <button 
-            className={`nav-item ${activeTab === 'transactions' ? 'active' : ''}`}
-            onClick={() => setActiveTab('transactions')}
-          >
-            Transactions
-          </button>
-          
-          <button 
-            className={`nav-item ${activeTab === 'manage' ? 'active' : ''}`}
-            onClick={() => setActiveTab('manage')}
-          >
-            Manage Data
-          </button>
-        </nav>
 
-        <div className="sidebar-footer">
-          <button className="nav-item" onClick={logout}>
-            Logout
-          </button>
-        </div>
-      </aside>
+      <Sidebar
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        onLogout={logout}
+      />
 
       {/* Main Content Area */}
       <main className="main-content">
-        {error && <div className="card" style={{borderColor: 'var(--danger-color)', color: 'var(--danger-color)'}}>{error}</div>}
+        {error && <div className="card" style={{ borderColor: 'var(--danger-color)', color: 'var(--danger-color)' }}>{error}</div>}
 
         {/* Overview Tab */}
         {activeTab === 'overview' && (
