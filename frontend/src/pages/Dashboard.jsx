@@ -1,4 +1,4 @@
-import Sidebar from '../components/layout/Sidebar';
+import Sidebar from '../components/layout/sidebar';
 import { useState, useEffect } from 'react';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
@@ -7,7 +7,6 @@ import CategoryAccountManager from '../components/CategoryAccountManager';
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview');
-  
   const [transactions, setTransactions] = useState([]);
   const [count, setCount] = useState(0);
   const [page, setPage] = useState(1);
@@ -116,14 +115,41 @@ function Dashboard() {
         {error && <div className="card" style={{ borderColor: 'var(--danger-color)', color: 'var(--danger-color)' }}>{error}</div>}
 
         {/* Overview Tab */}
-        {activeTab === 'overview' && (
+{activeTab === 'overview' && (
+  <div className="tab-pane">
+    <h2>Dashboard Overview</h2>
+    <p>Welcome back! Here's a summary of your finances.</p>
+    <Summary />
+  </div>
+)}
+
+{/* Accounts Tab */}
+        {activeTab === 'accounts' && (
           <div className="tab-pane">
-            <h2>Dashboard Overview</h2>
-            <p>Welcome back! Here's a summary of your finances.</p>
-            <Summary />
+            <h2>My Accounts</h2>
+            <p>View all your financial accounts.</p>
+
+            <div className="card">
+              <div className="card-header">
+                <h3>Your Accounts</h3>
+                <span>{accounts.length} Accounts</span>
+              </div>
+
+              <div className="accounts-grid">
+                {accounts.length === 0 ? (
+                  <p>No accounts found. Add an account in Manage Data.</p>
+                ) : (
+                  accounts.map((account) => (
+                    <div className="card" key={account.id}>
+                      <h3>{account.name}</h3>
+                      <p>Financial Account</p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
           </div>
         )}
-
         {/* Transactions Tab */}
         {activeTab === 'transactions' && (
           <div className="tab-pane">
