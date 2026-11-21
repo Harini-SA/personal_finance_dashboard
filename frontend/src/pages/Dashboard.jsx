@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import Summary from '../components/Summary';
 import CategoryAccountManager from '../components/CategoryAccountManager';
 import Budgets from './Budgets';
+import Transactions from './Transactions';
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -157,134 +158,12 @@ function Dashboard() {
   </div>
 )}
         {/* Transactions Tab */}
-        {activeTab === 'transactions' && (
-          <div className="tab-pane">
-            <h2>Transactions</h2>
-            <p>Manage and track your income and expenses.</p>
-
-            <div className="card">
-              <div className="card-header">
-                <h3>Add New Transaction</h3>
-              </div>
-              <form onSubmit={handleAddTransaction}>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label>Amount</label>
-                    <input type="number" name="amount" placeholder="0.00" value={form.amount} onChange={handleFormChange} required />
-                  </div>
-                  <div className="form-group">
-                    <label>Type</label>
-                    <select name="type" value={form.type} onChange={handleFormChange}>
-                      <option value="expense">Expense</option>
-                      <option value="income">Income</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label>Category</label>
-                    <select name="category" value={form.category} onChange={handleFormChange} required>
-                      <option value="">Select Category</option>
-                      {categories.map((c) => (
-                        <option key={c.id} value={c.id}>{c.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label>Account</label>
-                    <select name="account" value={form.account} onChange={handleFormChange} required>
-                      <option value="">Select Account</option>
-                      {accounts.map((a) => (
-                        <option key={a.id} value={a.id}>{a.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label>Date</label>
-                    <input type="date" name="date" value={form.date} onChange={handleFormChange} required />
-                  </div>
-                  <div className="form-group">
-                    <label>Note</label>
-                    <input type="text" name="note" placeholder="Optional note" value={form.note} onChange={handleFormChange} />
-                  </div>
-                </div>
-                <button type="submit" className="primary">Add Transaction</button>
-              </form>
-            </div>
-
-            <div className="card">
-              <div className="card-header" style={{flexWrap: 'wrap', gap: '1rem'}}>
-                <h3>Recent Transactions</h3>
-                <div style={{display: 'flex', gap: '1rem'}}>
-                  <select value={filterType} onChange={(e) => setFilterType(e.target.value)} style={{width: '150px'}}>
-                    <option value="">All Types</option>
-                    <option value="expense">Expense</option>
-                    <option value="income">Income</option>
-                  </select>
-                  <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} style={{width: '180px'}}>
-                    <option value="">All Categories</option>
-                    {categories.map((c) => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              
-              {loading ? (
-                <p>Loading transactions...</p>
-              ) : transactions.length === 0 ? (
-                <p>No transactions found.</p>
-              ) : (
-                <>
-                  <div className="table-container">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Date</th>
-                          <th>Type</th>
-                          <th>Category</th>
-                          <th>Account</th>
-                          <th>Amount</th>
-                          <th>Note</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {transactions.map((t) => (
-                          <tr key={t.id}>
-                            <td>{t.date}</td>
-                            <td>
-                              <span className={`badge ${t.type}`}>{t.type}</span>
-                            </td>
-                            <td>{t.category_name}</td>
-                            <td>{t.account_name}</td>
-                            <td style={{fontWeight: '600'}}>${parseFloat(t.amount).toFixed(2)}</td>
-                            <td style={{color: 'var(--text-secondary)'}}>{t.note || '-'}</td>
-                            <td>
-                              <button className="danger" onClick={() => handleDelete(t.id)} style={{padding: '0.25rem 0.5rem', fontSize: '0.75rem'}}>
-                                Delete
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  
-                  <div className="pagination">
-                    <button className="ghost" disabled={page === 1} onClick={() => setPage(page - 1)}>
-                      Previous
-                    </button>
-                    <span>
-                      Page {page} of {Math.max(1, Math.ceil(count / 10))}
-                    </span>
-                    <button className="ghost" disabled={page * 10 >= count} onClick={() => setPage(page + 1)}>
-                      Next
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        )}
+{/* Transactions Tab */}
+{activeTab === 'transactions' && (
+    <div className="tab-pane">
+        <Transactions />
+    </div>
+)}
 
         {/* Manage Data Tab */}
         {activeTab === 'manage' && (
