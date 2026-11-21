@@ -147,7 +147,7 @@ function Dashboard() {
         {activeTab === 'overview' && (
           <div className="tab-pane">
             <h2>Dashboard Overview</h2>
-            <p>Welcome back! Here's a summary of your finances.</p>
+            <p>Welcome! Here's a summary of your finances.</p>
             <Summary />
           </div>
         )}
@@ -252,7 +252,7 @@ function Dashboard() {
                             </td>
                             <td>{t.category_name}</td>
                             <td>{t.account_name}</td>
-                            <td style={{fontWeight: '600'}}>${parseFloat(t.amount).toFixed(2)}</td>
+                            <td style={{fontWeight: '600'}}>{$(parseFloat(t.amount).toFixed(2))}</td>
                             <td style={{color: 'var(--text-secondary)'}}>{t.note || '-'}</td>
                             <td>
                               <button className="danger" onClick={() => handleDelete(t.id)} style={{padding: '0.25rem 0.5rem', fontSize: '0.75rem'}}>
