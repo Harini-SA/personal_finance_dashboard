@@ -1,5 +1,5 @@
 from rest_framework.routers import DefaultRouter
-from .views import CategoryViewSet, AccountViewSet, TransactionViewSet, BudgetViewSet,register,MonthlySummaryView, CategorySummaryView
+from .views import CategoryViewSet, AccountViewSet, TransactionViewSet, BudgetViewSet,register,MonthlySummaryView, CategorySummaryView, SavingsGoalViewSet
 from django.urls import path
 
 router = DefaultRouter()
@@ -7,6 +7,7 @@ router.register('categories', CategoryViewSet, basename='category')
 router.register('accounts', AccountViewSet, basename='account')
 router.register('transactions', TransactionViewSet, basename='transaction')
 router.register('budgets', BudgetViewSet, basename='budget')
+router.register('savings-goals', SavingsGoalViewSet, basename='savings-goal')
 
 
 urlpatterns = router.urls + [

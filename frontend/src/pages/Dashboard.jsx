@@ -6,6 +6,7 @@ import Summary from '../components/Summary';
 import CategoryAccountManager from '../components/CategoryAccountManager';
 import Budgets from './Budgets';
 import Transactions from './Transactions';
+import SavingsGoals from './SavingsGoals';
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -102,7 +103,6 @@ function Dashboard() {
     }
   };
 
-  // Icons removed as per user request
 
   return (
     <div className="dashboard-layout">
@@ -113,7 +113,6 @@ function Dashboard() {
         onLogout={logout}
       />
 
-      {/* Main Content Area */}
       <main className="main-content">
         {error && <div className="card" style={{ borderColor: 'var(--danger-color)', color: 'var(--danger-color)' }}>{error}</div>}
 
@@ -184,6 +183,11 @@ function Dashboard() {
               accounts={accounts}
               onUpdate={fetchCategoriesAndAccounts}
             />
+          </div>
+        )}
+        {activeTab === 'savings' && (
+          <div className="tab-pane">
+            <SavingsGoals />
           </div>
         )}
       </main>

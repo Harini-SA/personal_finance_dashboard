@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Account, Transaction, Budget
+from .models import Category, Account, Transaction, Budget, SavingsGoal
 from decimal import Decimal
 from django.db.models import Sum
 
@@ -108,3 +108,30 @@ class BudgetSerializer(serializers.ModelSerializer):
             "Please enter a valid year."
         )
      return value     
+
+class SavingsGoalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SavingsGoal
+        fields = [
+            'id',
+            'name',
+            'target_amount',
+            'current_amount',
+            'target_date',
+            'created_at'
+        ]
+        read_only_fields = ['id', 'created_at']
+
+    def validate_target_amount(self, value):
+        if value <= 0:
+            raise serializers.ValidationError(
+                "Target amount must be greater than zero."
+            )
+        return value
+
+    def validate_current_amount(self, value):
+        if value < 0:
+            raise serializers.ValidationError(
+                "Current amount cannot be negative."
+            )
+        return value

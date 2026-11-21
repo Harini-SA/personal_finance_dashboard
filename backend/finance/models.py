@@ -66,6 +66,26 @@ class Budget(models.Model):
         unique_together = ('user', 'category', 'month', 'year')
 
     def __str__(self):
-        return f"{self.category.name} - {self.month}/{self.year}"    
+        return f"{self.category.name} - {self.month}/{self.year}"  
+
+class SavingsGoal(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='savings_goals'
+    )
+    name = models.CharField(max_length=150)
+    target_amount = models.DecimalField(max_digits=12, decimal_places=2)
+    current_amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0
+    )
+    target_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
 
 # Create your models here.

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, permissions,status
-from .models import Category, Account, Transaction,Budget
-from .serializers import CategorySerializer, AccountSerializer, TransactionSerializer,BudgetSerializer
+from .models import Category, Account, Transaction,Budget, SavingsGoal
+from .serializers import CategorySerializer, AccountSerializer, TransactionSerializer,BudgetSerializer, SavingsGoalSerializer
 from django.contrib.auth.models import User
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -107,4 +107,14 @@ class BudgetViewSet(viewsets.ModelViewSet):
         return Budget.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)    
+        serializer.save(user=self.request.user)  
+
+class SavingsGoalViewSet(viewsets.ModelViewSet):
+    serializer_class = SavingsGoalSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return SavingsGoal.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
