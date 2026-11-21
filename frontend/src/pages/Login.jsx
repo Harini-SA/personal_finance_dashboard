@@ -23,7 +23,7 @@ function Login() {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h2>Welcome Back</h2>
+        <h2>Welcome</h2>
         {error && <div style={{ color: 'var(--danger-color)', marginBottom: '1rem', textAlign: 'center' }}>{error}</div>}
         <form onSubmit={handleSubmit}>
           <input
