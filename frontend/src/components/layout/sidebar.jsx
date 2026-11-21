@@ -4,6 +4,7 @@ function Sidebar({ activeTab, onTabChange, onLogout }) {
     { id: 'overview', label: 'Overview' },
     { id: 'transactions', label: 'Transactions' },
     { id: 'accounts', label: 'Accounts' },
+    { id: 'manage', label: 'Manage Data' },
     { id: 'budgets', label: 'Budgets' },
     { id: 'savings', label: 'Savings Goals' },
     { id: 'analytics', label: 'Analytics' },

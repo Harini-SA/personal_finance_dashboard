@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from rest_framework import viewsets, permissions,status
-from .models import Category, Account, Transaction
-from .serializers import CategorySerializer, AccountSerializer, TransactionSerializer
+from .models import Category, Account, Transaction,Budget
+from .serializers import CategorySerializer, AccountSerializer, TransactionSerializer,BudgetSerializer
 from django.contrib.auth.models import User
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 
 
@@ -97,3 +98,13 @@ class CategorySummaryView(APIView):
             .order_by('-total')
         )
         return Response(data)
+
+class BudgetViewSet(viewsets.ModelViewSet):
+    serializer_class = BudgetSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Budget.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)    

@@ -13,6 +13,12 @@ class Account(models.Model):
     name = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='accounts')
 
+    opening_balance = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0
+    )
+
     def __str__(self):
         return self.name
 
@@ -40,5 +46,26 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"{self.type} - {self.amount} on {self.date}"
+
+class Budget(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='budgets'
+    )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name='budgets'
+    )
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    month = models.PositiveSmallIntegerField()
+    year = models.PositiveSmallIntegerField()
+
+    class Meta:
+        unique_together = ('user', 'category', 'month', 'year')
+
+    def __str__(self):
+        return f"{self.category.name} - {self.month}/{self.year}"    
 
 # Create your models here.

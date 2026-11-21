@@ -87,6 +87,7 @@ function Dashboard() {
       await api.post('/transactions/', form);
       setForm({ amount: '', type: 'expense', category: '', account: '', note: '', date: '' });
       fetchTransactions();
+      fetchCategoriesAndAccounts();
     } catch (err) {
       setError('Failed to add transaction');
     }
@@ -145,6 +146,15 @@ function Dashboard() {
                     <div className="card" key={account.id}>
                       <h3>{account.name}</h3>
                       <p>Financial Account</p>
+                      <p>
+                Initial Balance: ₹
+                {Number(account.opening_balance).toFixed(2)}
+              </p>
+
+              <h4>
+                Current Balance: ₹
+                {Number(account.balance).toFixed(2)}
+              </h4>
                     </div>
                   ))
                 )}
@@ -161,8 +171,7 @@ function Dashboard() {
 {/* Transactions Tab */}
 {activeTab === 'transactions' && (
     <div className="tab-pane">
-        <Transactions />
-    </div>
+<Transactions onAccountsUpdate={fetchCategoriesAndAccounts} />     </div>
 )}
 
         {/* Manage Data Tab */}

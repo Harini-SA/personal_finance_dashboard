@@ -1,18 +1,22 @@
 
 .sidebar {
   width: 250px;
-  min-height: 100vh;
+  height: 100vh;
+  min-height: 0;
   background: #111827;
   color: #ffffff;
   padding: 28px 18px;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .sidebar-brand {
   padding: 0 12px;
   margin-bottom: 45px;
+  flex-shrink: 0;
 }
 
 .sidebar-brand h2 {
@@ -39,6 +43,10 @@
   letter-spacing: 1.2px;
   padding: 0 12px;
   margin-bottom: 14px;
+}
+
+.sidebar-section {
+  flex: 1;
 }
 
 .sidebar-nav {
@@ -74,7 +82,9 @@
 .sidebar-footer {
   margin-top: auto;
   padding-top: 25px;
+  padding-bottom: 10px;
   border-top: 1px solid #374151;
+  flex-shrink: 0;
 }
 
 .logout-link:hover {
@@ -85,8 +95,10 @@
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
+    height: auto;
     min-height: auto;
     padding: 18px;
+    overflow: visible;
   }
 
   .sidebar-brand {

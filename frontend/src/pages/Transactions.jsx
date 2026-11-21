@@ -1,8 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import api from '../api';
 
-function Transactions() {
+function Transactions({ onAccountsUpdate }) { 
     const [transactions, setTransactions] = useState([]);
     const [categories, setCategories] = useState([]);
     const [accounts, setAccounts] = useState([]);
@@ -89,6 +88,7 @@ function Transactions() {
             }
 
             await fetchTransactions();
+            await onAccountsUpdate?.(); 
             resetForm();
         } catch (error) {
             console.error('Error saving transaction:', error);

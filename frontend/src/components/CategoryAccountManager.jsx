@@ -4,6 +4,7 @@ import api from '../api';
 function CategoryAccountManager({ categories, accounts, onUpdate }) {
   const [newCategory, setNewCategory] = useState('');
   const [newAccount, setNewAccount] = useState('');
+  const [openingBalance, setOpeningBalance] = useState('');
   const [error, setError] = useState('');
 
   const addCategory = async (e) => {
@@ -21,11 +22,21 @@ function CategoryAccountManager({ categories, accounts, onUpdate }) {
 
   const addAccount = async (e) => {
     e.preventDefault();
-    if (!newAccount.trim()) return;
+    if (!newAccount.trim()){
+      setError('Please enter an account name');
+      return;
+    }
+
+    if (openingBalance.trim() === '' || Number(openingBalance) < 0) {
+      setError('Please enter a valid initial balance');
+      return;
+    }
     setError('');
     try {
-      await api.post('/accounts/', { name: newAccount });
+      await api.post('/accounts/', { name: newAccount, opening_balance: Number(openingBalance) });
       setNewAccount('');
+            setOpeningBalance('');
+
       onUpdate();
     } catch (err) {
       setError('Failed to add account');
@@ -68,22 +79,31 @@ function CategoryAccountManager({ categories, accounts, onUpdate }) {
           {accounts.map((a) => (
             <li key={a.id} style={{ padding: '0.75rem', backgroundColor: 'var(--bg-color)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                <span style={{ fontWeight: 500 }}>{a.name}</span>
+                <span>₹{Number(a.opening_balance).toFixed(2)}</span>
             </li>
           ))}
           {accounts.length === 0 && <p>No accounts found.</p>}
         </ul>
-        <form onSubmit={addAccount} style={{ display: 'flex', gap: '0.5rem' }}>
+        <form onSubmit={addAccount} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           <input
             type="text"
             placeholder="New account name"
             value={newAccount}
             onChange={(e) => setNewAccount(e.target.value)}
           />
-          <button type="submit" className="primary">Add</button>
+          <input
+            type="number"
+            placeholder="Initial balance (₹)"
+            min="0"
+            step="0.01"
+            value={openingBalance}
+            onChange={(e) => setOpeningBalance(e.target.value)}
+          />
+          <button type="submit" className="primary">Add Account</button>
         </form>
       </div>
 
-      {error && <div style={{ color: 'var(--danger-color)', gridColumn: '1 / -1' }}>{error}</div>}
+      {error && (<div style={{ color: 'var(--danger-color)', gridColumn: '1 / -1' }}>{error}</div>)}
     </div>
   );
 }
