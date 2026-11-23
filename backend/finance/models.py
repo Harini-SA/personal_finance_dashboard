@@ -88,4 +88,3 @@ class SavingsGoal(models.Model):
         return self.name
 
 
-# Create your models here.

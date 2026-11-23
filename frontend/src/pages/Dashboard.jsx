@@ -117,15 +117,15 @@ function Dashboard() {
         {error && <div className="card" style={{ borderColor: 'var(--danger-color)', color: 'var(--danger-color)' }}>{error}</div>}
 
         {/* Overview Tab */}
-{activeTab === 'overview' && (
-  <div className="tab-pane">
-    <h2>Dashboard Overview</h2>
-    <p>Welcome back! Here's a summary of your finances.</p>
-    <Summary />
-  </div>
-)}
+        {activeTab === 'overview' && (
+          <div className="tab-pane">
+            <h2>Dashboard Overview</h2>
+            <p>Welcome back! Here's a summary of your finances.</p>
+            <Summary />
+          </div>
+        )}
 
-{/* Accounts Tab */}
+        {/* Accounts Tab */}
         {activeTab === 'accounts' && (
           <div className="tab-pane">
             <h2>My Accounts</h2>
@@ -146,14 +146,14 @@ function Dashboard() {
                       <h3>{account.name}</h3>
                       <p>Financial Account</p>
                       <p>
-                Initial Balance: ₹
-                {Number(account.opening_balance).toFixed(2)}
-              </p>
+                        Initial Balance: ₹
+                        {Number(account.opening_balance).toFixed(2)}
+                      </p>
 
-              <h4>
-                Current Balance: ₹
-                {Number(account.balance).toFixed(2)}
-              </h4>
+                      <h4>
+                        Current Balance: ₹
+                        {Number(account.balance).toFixed(2)}
+                      </h4>
                     </div>
                   ))
                 )}
@@ -162,16 +162,15 @@ function Dashboard() {
           </div>
         )}
         {activeTab === 'budgets' && (
-  <div className="tab-pane">
-    <Budgets />
-  </div>
-)}
+          <div className="tab-pane">
+            <Budgets />
+          </div>
+        )}
         {/* Transactions Tab */}
-{/* Transactions Tab */}
-{activeTab === 'transactions' && (
-    <div className="tab-pane">
-<Transactions onAccountsUpdate={fetchCategoriesAndAccounts} />     </div>
-)}
+        {activeTab === 'transactions' && (
+          <div className="tab-pane">
+            <Transactions onAccountsUpdate={fetchCategoriesAndAccounts} />     </div>
+        )}
 
         {/* Manage Data Tab */}
         {activeTab === 'manage' && (

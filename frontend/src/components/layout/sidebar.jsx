@@ -6,10 +6,7 @@ function Sidebar({ activeTab, onTabChange, onLogout }) {
     { id: 'accounts', label: 'Accounts' },
     { id: 'manage', label: 'Manage Data' },
     { id: 'budgets', label: 'Budgets' },
-    { id: 'savings', label: 'Savings Goals' },
-    { id: 'analytics', label: 'Analytics' },
-    { id: 'ai-advisor', label: 'AI Budget Advisor' },
-    { id: 'simulator', label: 'What-If Simulator' },
+    { id: 'savings', label: 'Savings Goals' }
   ];
 
   return (
